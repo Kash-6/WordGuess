@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Hockey Guess Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <div class="heading">
+        <h1>Hockey Team Cities!</h1>
+    </div>
+
+    <div class="background">
+        <div class="container">
+
+
+            <h2>Press Any Key To Guess This Word!</h2>
+            <div>
+                <img id="image" src="./assets/images/puck.jpg" width="40%" height="200">
+            </div>
+
+           
+            <div>
+                <h3 id="currentword">_ _ _ _ _</h3>
+            </div>
+            <div id="scoreboard">
+                
+                <div class="sidebar">
+                    <h3>GUESSES REMAINING:
+                        <span id="guessesremaining"></span>
+                    </h3>
+                </div>
+
+                
+                <div class="sidebar">
+                    <h3>WINS:
+                        <span id="wins"></span>
+                    </h3>
+                </div>
+                
+                <div class="sidebar">
+                    <h3>LOSSES:
+                        <span id="losses"></span>
+                    </h3>
+                </div>
+
+                
+                <div class="sidebar">
+                    <h3>INCORRECT LETTERS:
+                        <span id="playerguesses"></span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        var words = ["toronto", "nashville", "columbus", "philadelphia", "washington"]
+
+
+        var randomWord = "";
+        var lettersOfWord = []
+        var blanks = 0;
+        var blanksAndCorrect = [];
+        var wrongGuess = [];
+        var wins = 0;
+        var losses = 0;
+        var guessesRemaining = 6;
+
+
+        function Game() {
+
+            randomWord = words[Math.floor(Math.random() * words.length)];
+
+
+            lettersOfWord = randomWord.split("");
+
+
+            blanks = lettersOfWord.length;
+
+
+            for (var i = 0; i < blanks; i++) {
+                blanksAndCorrect.push("_");
+            }
+
+
+            document.getElementById("currentword").innerHTML = "  " + blanksAndCorrect.join("  ");
+
+
+            console.log(randomWord);
+            console.log(lettersOfWord)
+            console.log(blanks)
+            console.log(blanksAndCorrect)
+        }
+
+
+        function winner() {
+
+            if (randomWord === words[0]) {
+                document.getElementById("image").src = "./assets/images/toronto.png";
+            }
+
+            else if (randomWord === words[1]) {
+                document.getElementById("image").src = "./assets/images/nashville.png";
+            }
+
+            else if (randomWord === words[2]) {
+                document.getElementById("image").src = "./assets/images/columbus.png";
+            }
+
+            else if (randomWord === words[3]) {
+                document.getElementById("image").src = "./assets/images/philadelphia.png";
+            }
+
+            else if (randomWord === words[4]) {
+                document.getElementById("image").src = "./assets/images/washington.png";
+            }
+        };
+
+        function reset() {
+            guessesRemaining = 6;
+            wrongGuess = [];
+            blanksAndCorrect = [];
+            Game()
+        }
+
+
+        function checkLetters(letter) {
+            var letterInWord = false;
+
+            for (var i = 0; i < blanks; i++) {
+                if (randomWord[i] == letter) {
+                    letterInWord = true;
+                }
+            }
+
+            if (letterInWord) {
+
+                for (var i = 0; i < blanks; i++) {
+                    if (randomWord[i] == letter) {
+                        blanksAndCorrect[i] = letter;
+                    }
+                }
+            }
+
+            else {
+                wrongGuess.push(letter);
+                guessesRemaining--;
+            }
+            console.log(blanksAndCorrect);
+        }
+
+
+        function complete() {
+            console.log("wins:" + wins + "| losses:" + losses + "| guesses left:" + guessesRemaining)
+
+
+            if (lettersOfWord.toString() == blanksAndCorrect.toString()) {
+                wins++;
+                winner()
+                reset()
+
+                document.getElementById("wins").innerHTML = " " + wins;
+
+            } else if (guessesRemaining === 0) {
+                losses++;
+                reset()
+                document.getElementById("image").src = "./assets/images/brickwall.jpg"
+                document.getElementById("losses").innerHTML = " " + losses;
+            }
+
+            document.getElementById("currentword").innerHTML = "  " + blanksAndCorrect.join(" ");
+            document.getElementById("guessesremaining").innerHTML = " " + guessesRemaining;
+        }
+
+
+
+        Game()
+
+
+        document.onkeyup = function (event) {
+            var guesses = String.fromCharCode(event.keyCode).toLowerCase();
+
+            checkLetters(guesses);
+
+            complete();
+
+            console.log(guesses);
+
+            document.getElementById("playerguesses").innerHTML = "  " + wrongGuess.join(" ");
+        }
+
+
+
+    </script>
+
+</body>
+
+</html>
